@@ -1,0 +1,115 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// Book class to store individual book details
+class Book {
+    private String title;
+    private String author;
+    private int yearPublished;
+
+    public Book(String title, String author, int yearPublished) {
+        this.title = title;
+        this.author = author;
+        this.yearPublished = yearPublished;
+    }
+
+    @Override
+    public String toString() {
+        return "Title: " + title + " | Author: " + author + " | Year: " + yearPublished;
+    }
+
+    public String toCSVFormat() {
+        return title + "," + author + "," + yearPublished;
+    }
+}
+
+// Main library system class
+class LibrarySystem {
+    private ArrayList<Book> books = new ArrayList<>();
+    private Scanner input = new Scanner(System.in);
+
+    // Add a new book
+    public void addBook() {
+        System.out.print("Enter book title: ");
+        String title = input.nextLine();
+
+        System.out.print("Enter author name: ");
+        String author = input.nextLine();
+
+        System.out.print("Enter year published: ");
+        int year = Integer.parseInt(input.nextLine());
+
+        books.add(new Book(title, author, year));
+        System.out.println("Book added successfully.");
+    }
+
+    // Display all books
+    public void displayBooks() {
+        if (books.isEmpty()) {
+            System.out.println("No books found in the library.");
+        } else {
+            System.out.println("Library Book List:");
+            for (Book b : books) {
+                System.out.println(b);
+            }
+        }
+    }
+
+    // Save book list to file
+    public void saveToFile() {
+        if (books.isEmpty()) {
+            System.out.println("No books to save.");
+            return;
+        }
+
+        try (FileWriter writer = new FileWriter("library_books.txt")) {
+            for (Book b : books) {
+                writer.write(b.toCSVFormat() + "\n");
+            }
+            System.out.println("Book list saved to 'library_books.txt'.");
+        } catch (IOException e) {
+            System.out.println("Error saving file: " + e.getMessage());
+        }
+    }
+
+    // Main menu
+    public void run() {
+        while (true) {
+            System.out.println("\nLIBRARY MANAGEMENT SYSTEM");
+            System.out.println("1. Add Book");
+            System.out.println("2. Display Books");
+            System.out.println("3. Save to File");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            String option = input.nextLine();
+
+            switch (option) {
+                case "1":
+                    addBook();
+                    break;
+                case "2":
+                    displayBooks();
+                    break;
+                case "3":
+                    saveToFile();
+                    break;
+                case "4":
+                    System.out.println("Exiting the system.");
+                    input.close();
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+}
+
+// Main class to launch the app
+public class Main {
+    public static void main(String[] args) {
+        LibrarySystem library = new LibrarySystem();
+        library.run();
+    }
+}
